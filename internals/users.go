@@ -6,22 +6,31 @@ import (
 	"strings"
 )
 
+func rootCheck() bool {
+	if os.Geteuid() == 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
 // Function gets all the users home directories 
 //
 // Return: []string -> and array of all the users home directories
-func getUsersHomedir() []string {
+func GetUsersHomedir() ([]string, bool){
+	isRoot := rootCheck()
 	// array to hold all the users on the system
 	var users []string
 	badUsers := []string{"/usr/sbin/nologin", "/bin/sync", "/bin/false"}
 
 	if _, err := os.Stat("/etc/passwd"); err != nil {
 		fmt.Printf("[!] Error getting users: %v\n", err)
-		return users
+		return users, isRoot
 	}
 	file, err := os.OpenFile("/etc/passwd", os.O_RDONLY, 0644)
 	if err != nil {
 		fmt.Printf("[!] Error opening file: %v\n", err)
-		return users
+		return users, isRoot
 	}
 	defer file.Close()
 
@@ -31,6 +40,10 @@ func getUsersHomedir() []string {
 		fields := strings.Split(line, ":")
 		if len(fields) < 7 {
 			// pass over lines that dont have 7 fields
+			continue
+		}
+		// check if we are root, it not then dont add /root to our array
+		if fields[0] == "root" && !isRoot {
 			continue
 		}
 		isBadUsers := false
@@ -48,5 +61,5 @@ func getUsersHomedir() []string {
 		fmt.Printf("[!] Error reading file: %v\n", err)
 	}
 
-	return users
+	return users, isRoot
 }
