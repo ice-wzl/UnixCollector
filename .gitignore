@@ -2,3 +2,4 @@ UnixCollector
 exdata/*
 rootfs
 rootfs/*
+builds
