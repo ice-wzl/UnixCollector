@@ -1,7 +1,7 @@
 package internals
 
 // Code mostly taken from https://github.com/R3DRUN3/vermilion/blob/main/internal/scan.go
-// I liked most of his implementation, credit to above repo. Light modifications made.
+// I liked most of his implementation, credit to above repo. Modifications made.
 
 import (
 	"encoding/json"
@@ -118,18 +118,8 @@ func GetSystemInfo() (map[string]interface{}, error) {
 		info["mounted_filesystems"] = "N/A"
 	}
 
-	// Get installed packages (Linux-specific)
-	//packages, err := getInstalledPackages()
-	//if err == nil {
-	//	info["installed_packages"] = packages
-	//} else {
-	//	info["installed_packages"] = "N/A"
-	//}
-
 	return info, nil
 }
-
-// Helper functions
 
 func getSystemUptime() (string, error) {
 	if runtime.GOOS == "linux" {
@@ -177,30 +167,3 @@ func getMountedFileSystems() ([]string, error) {
 
 	return result, nil
 }
-
-// This function needs heavy modification, we need to do more granular detection of what type of
-// system we are on before we start blasting commands like a crazy person. I like the idea, not the
-// implementation
-/*
-func getInstalledPackages() ([]string, error) {
-	var packages []string
-	if runtime.GOOS == "linux" {
-		cmds := [][]string{
-			{"dpkg", "-l"},      // Debian-based systems
-			{"rpm", "-qa"},      // Red Hat-based systems
-			{"pacman", "-Q"},    // Arch-based systems
-			{"apk", "info"},     // Alpine Linux
-			{"flatpak", "list"}, // Flatpak
-			{"snap", "list"},    // Snap
-		}
-		for _, cmd := range cmds {
-			out, err := exec.Command(cmd[0], cmd[1:]...).Output()
-			if err == nil {
-				packages = append(packages, strings.Split(string(out), "\n")...)
-			}
-		}
-		return packages, nil
-	}
-	return nil, fmt.Errorf("unsupported os for installed packages")
-}
-*/
