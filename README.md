@@ -2,6 +2,7 @@
 ## Overview
 UnixCollector is a simple and lightweight CLI tool designed for rapid collection, and optional exfiltration of sensitive information from Linux systems.
 Its primary purpose is to streamline the process of gathering critical data in red teaming scenarios.
+
 ## Building
 - Ensure you have golang installed on your host
 - To install golang see: https://go.dev/doc/install 
@@ -13,8 +14,10 @@ go build
 - `UnixCollector` takes no arguments or flags, it knows what to do!
 
 ## Benifits 
+My origional inspiration for this project was https://github.com/R3DRUN3/vermilion
+After attempting a PR, it was determined that we had different design ideas, thus I wanted to make my own version
 1. `UnixCollector` will rebuild the directory structure of the host. For example if you collect `/etc/fstab` you will see that same directory struture reflected in your exfil directory
-  - See below for a visual example of the rebuilt directory structure
+  - See below for a visual example of the rebuilt directory structure. This makes it much easier to analyze the files you have collected, as you know the exact position they are on the remote host
 ![image](https://github.com/user-attachments/assets/2515b50c-9e22-4dab-854d-94cbb75b2ad8)
 2. Creates an archive for easy exfiltration
   - When the tool finishes its run, it will `tar/gzip` the contents to make the file transfer process as easy as possible.
