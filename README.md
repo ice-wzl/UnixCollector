@@ -1,6 +1,5 @@
 # UnixCollector
-![Gemini_Generated_Image_cgy691cgy691cgy6(1)](https://github.com/user-attachments/assets/aeb9327d-5814-49c5-86d7-9d3c29d4c9e4)
-
+![Gemini_Generated_Image_cgy691cgy691cgy6(2)](https://github.com/user-attachments/assets/0c13ca70-7b2c-49a8-bfdc-619e860a9337)
 ## Overview
 - UnixCollector is a simple and lightweight CLI tool designed for rapid collection, and optional exfiltration of sensitive information from Linux systems.
 - Its primary purpose is to streamline the process of gathering critical data in red teaming scenarios.
