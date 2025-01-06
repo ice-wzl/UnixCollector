@@ -45,6 +45,8 @@ func ShellCollector(userHome string) []string {
 		filepath.Join(userHome, ".ash_history"),
 		filepath.Join(userHome, ".ksh_history"),
 		filepath.Join(userHome, ".tcsh_history"),
+		filepath.Join(userHome, ".csh_history"),
+		filepath.Join(userHome, ".sh_history"),
 	}
 	return paths
 }
@@ -122,6 +124,17 @@ func MiscCollector(userHome string) []string {
 func MailCollector(userHome string) []string {
 	paths := []string{
 		filepath.Join(userHome, ".thunderbird"),
+	}
+	return paths
+}
+
+func WebBrowsers(userHome string) []string {
+	paths := []string{
+		filepath.Join(userHome, ".config/Chromium/Default/Cookies"),
+		filepath.Join(userHome, ".config/Chromium/Default/History"),
+		filepath.Join(userHome, ".config/Chromium/Default/Login Data"),
+		filepath.Join(userHome, ".config/Chromium/Default/Preferences"),
+		filepath.Join(userHome, ".config/Chromium/Default/Web Data"),
 	}
 	return paths
 }

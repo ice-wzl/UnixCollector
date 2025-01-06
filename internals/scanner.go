@@ -63,12 +63,14 @@ func ScanSensitiveFiles(outputDir string, usersHome []string, isRoot bool) []str
 		paths = append(paths, KeyringCollector(userHome)...)
 		paths = append(paths, MiscCollector(userHome)...)
 		paths = append(paths, MailCollector(userHome)...)
+		paths = append(paths, WebBrowsers(userHome)...)
 		// System file collector
 		paths = append(paths, HttpServerCollector()...)
 		paths = append(paths, SysinfoCollector()...)
 		paths = append(paths, LogCollector()...)
 		paths = append(paths, SshSystemCollector()...)
 		paths = append(paths, KerberosCollector()...)
+		paths = append(paths, MiscSystemCollector()...)
 
 	}
 		

@@ -51,4 +51,11 @@ func KerberosCollector() []string {
 	return paths
 }
 
+func MiscSystemCollector() []string {
+	paths := []string{
+		"/etc/hosts.equiv",								// rhosts system file
+	}
+	return paths
+}
+
 
