@@ -9,7 +9,6 @@ import (
 	"io"
 	"net"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"runtime"
 	"strconv"
@@ -68,21 +67,32 @@ func GetSystemInfo() (map[string]interface{}, error) {
 		info["hostname"] = "N/A"
 	}
 
-	// Get local IP addresses
-	var localIPs []string
-	addrs, err := net.InterfaceAddrs()
+	// Get local IP addresses + MACs
+	var hostInterfaces []string
+	interfaces, err := net.Interfaces()
 	if err == nil {
-		for _, addr := range addrs {
-			if ip, ok := addr.(*net.IPNet); ok && !ip.IP.IsLoopback() {
-				if ip.IP.To4() != nil {
-					localIPs = append(localIPs, ip.IP.String())
-				} else if ip.IP.To16() != nil {
-					localIPs = append(localIPs, ip.IP.String())
-				}
+		for _, iface := range interfaces {
+			var macAddr string
+			if iface.HardwareAddr.String() == "" {
+				macAddr = "None"
+			} else {
+				macAddr = iface.HardwareAddr.String()
 			}
+			// get list of addrs associated to interface
+			addrs, err := iface.Addrs()
+			if err != nil {
+				// pass over errors, we have too much else to do 
+				continue
+			}
+			var ipAddr []string
+			for _, addr := range addrs {
+				ipAddr = append(ipAddr, addr.String())
+			}
+	
+			hostInterfaces = append(hostInterfaces, fmt.Sprintf("%s %s %s", iface.Name, macAddr, ipAddr))
 		}
 	}
-	info["local_ips"] = localIPs
+	info["local_ips"] = hostInterfaces
 
 	// Get system uptime
 	uptime, err := getSystemUptime()
@@ -106,14 +116,6 @@ func GetSystemInfo() (map[string]interface{}, error) {
 		info["mounted_filesystems"] = mountedFS
 	} else {
 		info["mounted_filesystems"] = "N/A"
-	}
-
-	// Get active network connections
-	connections, err := getActiveConnections()
-	if err == nil {
-		info["active_connections"] = connections
-	} else {
-		info["active_connections"] = "N/A"
 	}
 
 	// Get installed packages (Linux-specific)
@@ -171,25 +173,9 @@ func getMountedFileSystems() ([]string, error) {
 	}
 
 	lines := strings.Split(string(data), "\n")
-	for _, line := range lines {
-		fields := strings.Fields(line)
-		if len(fields) > 1 {
-			result = append(result, fields[1]) // Append mount point
-		}
-	}
+	result = append(result, lines...)
 
 	return result, nil
-}
-
-func getActiveConnections() ([]string, error) {
-	if runtime.GOOS == "linux" {
-		out, err := exec.Command("ss", "-tulnp").Output()
-		if err != nil {
-			return nil, err
-		}
-		return strings.Split(string(out), "\n"), nil
-	}
-	return nil, fmt.Errorf("unsupported os for active connections")
 }
 
 // This function needs heavy modification, we need to do more granular detection of what type of
