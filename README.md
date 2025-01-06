@@ -1,8 +1,9 @@
 # UnixCollector
+![unixcollector](https://github.com/user-attachments/assets/84ff4ed9-38b8-424c-b122-091389afce88)
+
 ## Overview
 - UnixCollector is a simple and lightweight CLI tool designed for rapid collection, and optional exfiltration of sensitive information from Linux systems.
 - Its primary purpose is to streamline the process of gathering critical data in red teaming scenarios.
-![unixcollector](https://github.com/user-attachments/assets/84ff4ed9-38b8-424c-b122-091389afce88)
 
 ## Building
 - Ensure you have golang installed on your host
