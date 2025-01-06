@@ -27,7 +27,7 @@ func GetUsersHomedir() ([]string, bool){
 		fmt.Printf("[!] Error getting users: %v\n", err)
 		return users, isRoot
 	}
-	file, err := os.OpenFile("/etc/passwd", os.O_RDONLY, 0644)
+	file, err := os.OpenFile("/etc/passwd", os.O_RDONLY, 0755)
 	if err != nil {
 		fmt.Printf("[!] Error opening file: %v\n", err)
 		return users, isRoot
