@@ -10,7 +10,7 @@
 ````
 git clone https://github.com/ice-wzl/UnixCollector.git
 cd UnixCollector
-go build
+CGO_ENABLED=0 go build
 ````
 - `UnixCollector` takes no arguments or flags, it knows what to do!
 
