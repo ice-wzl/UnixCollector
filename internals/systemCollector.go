@@ -1,7 +1,5 @@
 package internals
 
-// /etc/httpd/conf/*.conf
-// /etc/httpd/conf.d/*.conf
 func HttpServerCollector() []string {
 	paths := []string{
 		"/etc/ssl",                   // SSL certificates
@@ -32,6 +30,24 @@ func LogCollector() []string {
 		"/var/log/auth.log", // Authentication logs (Linux-specific)
 		"/var/log/secure",   // Secure logs (Red Hat/CentOS-specific)
 		"/var/log/wtmp",     // Authentication logs, source ip
+	}
+	return paths
+}
+
+func JournalCollector() []string {
+	paths := []string{
+		"/etc/systemd/journald.conf",
+		"/etc/systemd/journald.conf.d",
+		"/lib/systemd/system/systemd-journald.service",
+	}
+	return paths
+}
+
+func SyslogCollector() []string {
+	paths := []string{
+		"/etc/rsyslog.conf",
+		"/etc/rsyslog.d",
+		"/lib/systemd/system/rsyslog.service",
 	}
 	return paths
 }

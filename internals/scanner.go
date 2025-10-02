@@ -70,6 +70,8 @@ func ScanSensitiveFiles(outputDir string, usersHome []string, isRoot bool) []str
 		paths = append(paths, SshSystemCollector()...)
 		paths = append(paths, KerberosCollector()...)
 		paths = append(paths, MiscSystemCollector()...)
+		paths = append(paths, JournalCollector()...)
+		paths = append(paths, SyslogCollector()...)
 		// Proxmox collector
 		paths = append(paths, ProxmoxConfigCollector()...)
 
